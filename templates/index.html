@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Employee Tracker</h1>
+      <p>Browse existing staff and add new employees with a single click.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Current Employees</h2>
+      <div class="filter-panel">
+        <h3>Filter employees</h3>
+        <div class="filter-grid">
+          <label>
+            Name
+            <input type="text" id="filter-name" name="name" class="filter-field" placeholder="Filter by name" />
+          </label>
+          <label>
+            Title
+            <input type="text" id="filter-title" name="title" class="filter-field" placeholder="Filter by title" />
+          </label>
+          <label>
+            Email
+            <input type="text" id="filter-email" name="email" class="filter-field" placeholder="Filter by email" />
+          </label>
+          <label>
+            Department
+            <input type="text" id="filter-department" name="department" class="filter-field" placeholder="Filter by department" />
+          </label>
+          <label>
+            Hiring Date
+            <input type="text" id="filter-hiring_date" name="hiring_date" class="filter-field" placeholder="Filter by hiring date" />
+          </label>
+          <label>
+            Salary
+            <input type="text" id="filter-salary" name="salary" class="filter-field" placeholder="Filter by salary" />
+          </label>
+          <label>
+            Phone Number
+            <input type="text" id="filter-phone_number" name="phone_number" class="filter-field" placeholder="Filter by phone number" />
+          </label>
+          <label>
+            Office Location
+            <input type="text" id="filter-office_location" name="office_location" class="filter-field" placeholder="Filter by office location" />
+          </label>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="employee-table">
+          <thead>
+            <tr>
+              <th>Name <button type="button" class="sort-button" data-field="name" aria-label="Sort by Name"><span class="sort-icon">⇅</span></button></th>
+              <th>Title <button type="button" class="sort-button" data-field="title" aria-label="Sort by Title"><span class="sort-icon">⇅</span></button></th>
+              <th>Email <button type="button" class="sort-button" data-field="email" aria-label="Sort by Email"><span class="sort-icon">⇅</span></button></th>
+              <th>Department <button type="button" class="sort-button" data-field="department" aria-label="Sort by Department"><span class="sort-icon">⇅</span></button></th>
+              <th>Hiring Date <button type="button" class="sort-button" data-field="hiring_date" aria-label="Sort by Hiring Date"><span class="sort-icon">⇅</span></button></th>
+              <th>Salary <button type="button" class="sort-button" data-field="salary" aria-label="Sort by Salary"><span class="sort-icon">⇅</span></button></th>
+              <th>Phone Number <button type="button" class="sort-button" data-field="phone_number" aria-label="Sort by Phone Number"><span class="sort-icon">⇅</span></button></th>
+              <th>Office Location <button type="button" class="sort-button" data-field="office_location" aria-label="Sort by Office Location"><span class="sort-icon">⇅</span></button></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if employees %}
+              {% for employee in employees %}
+                <tr class="employee-row">
+                  <td>{{ employee.name or employee.get('name', '') }}</td>
+                  <td>{{ employee.title or employee.get('title', '') }}</td>
+                  <td>{{ employee.email or employee.get('email', '') }}</td>
+                  <td>{{ employee.department or employee.get('department', '') }}</td>
+                  <td>{{ employee.hiring_date or employee.get('hiring_date', '') }}</td>
+                  <td>{{ employee.salary or employee.get('salary', '') }}</td>
+                  <td>{{ employee.phone_number or employee.get('phone_number', '') }}</td>
+                  <td>{{ employee.office_location or employee.get('office_location', '') }}</td>
+                  <td class="action-cell"><button type="button" class="full-toggle">Show full</button></td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr class="empty-state-row">
+                <td colspan="9" class="empty-state">No employees have been added yet.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel form-panel">
+      <h2>Add Employee</h2>
+      <form id="employee-form">
+        <label>
+          Name
+          <input type="text" name="name" placeholder="Jane Doe" required />
+        </label>
+        <label>
+          Title
+          <input type="text" name="title" placeholder="Software Engineer" />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" placeholder="jane@example.com" />
+        </label>
+        <label>
+          Department
+          <input type="text" name="department" placeholder="Engineering" />
+        </label>
+        <label>
+          Hiring Date
+          <input type="text" name="hiring_date" placeholder="2026-01-04" />
+        </label>
+        <label>
+          Salary
+          <input type="text" name="salary" placeholder="$85,000" />
+        </label>
+        <label>
+          Phone Number
+          <input type="text" name="phone_number" placeholder="(555) 123-4567" />
+        </label>
+        <label>
+          Office Location
+          <input type="text" name="office_location" placeholder="New York" />
+        </label>
+        <button type="submit" class="primary-button">Add Employee</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <h3>Remove Employee</h3>
+      <form id="remove-form">
+        <label>
+          Employee name
+          <input type="text" name="name" placeholder="Jane Doe" required />
+        </label>
+        <button type="submit" class="secondary-button">Remove Employee</button>
+      </form>
+      <div class="divider"></div>
+      <h3>Modify Employee</h3>
+      <form id="modify-form">
+        <label>
+          Existing name
+          <input type="text" name="existing_name" placeholder="Jane Doe" required />
+        </label>
+        <label>
+          New name
+          <input type="text" name="new_name" placeholder="Jane Smith" />
+        </label>
+        <label>
+          Title
+          <input type="text" name="title" placeholder="Senior Engineer" />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" placeholder="jane.smith@example.com" />
+        </label>
+        <label>
+          Department
+          <input type="text" name="department" placeholder="Product" />
+        </label>
+        <label>
+          Hiring Date
+          <input type="text" name="hiring_date" placeholder="2026-01-04" />
+        </label>
+        <label>
+          Salary
+          <input type="text" name="salary" placeholder="$90,000" />
+        </label>
+        <label>
+          Phone Number
+          <input type="text" name="phone_number" placeholder="(555) 987-6543" />
+        </label>
+        <label>
+          Office Location
+          <input type="text" name="office_location" placeholder="Chicago" />
+        </label>
+        <button type="submit" class="primary-button">Modify Employee</button>
+      </form>
+      <div class="help-text">Leave any fields blank to preserve their current values.</div>
+      <div id="form-feedback" class="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
